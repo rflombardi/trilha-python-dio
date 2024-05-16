@@ -7,4 +7,5 @@ def salario_bonus(bonus):
     return salario
 
 
-salario_bonus(500)  # 2500
+salario_com_bonus = salario_bonus(500)  # 2500
+print(salario_com_bonus)
