@@ -10,10 +10,10 @@ def meu_decorador(funcao):
 
 @meu_decorador
 def ola_mundo(nome, outro_argumento):
-    print(f"Olá mundo {nome}!")
+    print(f"Olá mundo {nome, outro_argumento}!")
     return nome.upper()
 
 
-resultado = ola_mundo("João", 1000)
+resultado = ola_mundo("João", "Saldanha")
 print(resultado)
-print(ola_mundo)
+# print(ola_mundo)
