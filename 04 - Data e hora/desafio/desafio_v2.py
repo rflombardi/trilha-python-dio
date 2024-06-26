@@ -165,7 +165,7 @@ class Historico:
             {
                 "tipo": transacao.__class__.__name__,
                 "valor": transacao.valor,
-                "data": datetime.utcnow().strftime("%d-%m-%Y %H:%M:%S"),
+                "data": datetime.now().strftime("%d-%m-%Y %H:%M:%S"),
             }
         )
 
@@ -177,25 +177,28 @@ class Historico:
             ):
                 yield transacao
 
+    # def transacoes_do_dia(self):
+        # data_atual = datetime.now().date()
+        # transacoes = []
+        # for transacao in self._transacoes:
+            # data_transacao = datetime.strptime(
+                # transacao["data"], "%d-%m-%Y %H:%M:%S").date()
+            # if data_atual == data_transacao:
+                # transacoes.append(transacao)
+        # return transacoes
+
+        # Compressão de Listas
     def transacoes_do_dia(self):
-        data_atual = datetime.utcnow().date()
-        transacoes = []
-        for transacao in self._transacoes:
-            data_transacao = datetime.strptime(
-                transacao["data"], "%d-%m-%Y %H:%M:%S"
-            ).date()
-            if data_atual == data_transacao:
-                transacoes.append(transacao)
-        return transacoes
+        data_atual = datetime.now().date()
+        return [transacao for transacao in self._transacoes if datetime.strptime(transacao["data"], "%d-%m-%Y %H:%M:%S").date() == data_atual]
 
 
 class Transacao(ABC):
     @property
-    @abstractproperty
     def valor(self):
         pass
 
-    @abstractclassmethod
+    @classmethod
     def registrar(self, conta):
         pass
 
@@ -242,19 +245,20 @@ def log_transacao(func):
 def menu():
     menu = """\n
     ================ MENU ================
-    [d]\tDepositar
-    [s]\tSacar
-    [e]\tExtrato
-    [nc]\tNova conta
-    [lc]\tListar contas
-    [nu]\tNovo usuário
-    [q]\tSair
+    [D]\tDepositar
+    [S]\tSacar
+    [E]\tExtrato
+    [NC]\tNova conta
+    [LC]\tListar contas
+    [NU]\tNovo usuário
+    [Q]\tSair
     => """
-    return input(textwrap.dedent(menu))
+    return input(textwrap.dedent(menu)).upper()
 
 
 def filtrar_cliente(cpf, clientes):
-    clientes_filtrados = [cliente for cliente in clientes if cliente.cpf == cpf]
+    clientes_filtrados = [
+        cliente for cliente in clientes if cliente.cpf == cpf]
     return clientes_filtrados[0] if clientes_filtrados else None
 
 
@@ -323,7 +327,8 @@ def exibir_extrato(clientes):
     tem_transacao = False
     for transacao in conta.historico.gerar_relatorio():
         tem_transacao = True
-        extrato += f"\n{transacao['data']}\n{transacao['tipo']}:\n\tR$ {transacao['valor']:.2f}"
+        extrato += f"\n{transacao['data']}\n{transacao['tipo']
+                                             }:\n\tR$ {transacao['valor']:.2f}"
 
     if not tem_transacao:
         extrato = "Não foram realizadas movimentações"
@@ -388,26 +393,26 @@ def main():
     while True:
         opcao = menu()
 
-        if opcao == "d":
+        if opcao == "D":
             depositar(clientes)
 
-        elif opcao == "s":
+        elif opcao == "S":
             sacar(clientes)
 
-        elif opcao == "e":
+        elif opcao == "E":
             exibir_extrato(clientes)
 
-        elif opcao == "nu":
+        elif opcao == "NU":
             criar_cliente(clientes)
 
-        elif opcao == "nc":
+        elif opcao == "NC":
             numero_conta = len(contas) + 1
             criar_conta(numero_conta, clientes, contas)
 
-        elif opcao == "lc":
+        elif opcao == "LC":
             listar_contas(contas)
 
-        elif opcao == "q":
+        elif opcao == "Q":
             break
 
         else:
